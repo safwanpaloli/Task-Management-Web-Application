@@ -1,21 +1,32 @@
 import axios from 'axios'
+import { ElNotification } from 'element-plus'
 
 export default function useLogin() {
     const loginCredentials = reactive({ email: '', password: '' })
+
     const login = async () => {
-        const response = await axios.post('http://localhost:8000/api/login', loginCredentials)
-        navigateTo('/dashboard')
-        const data = response.data
+        await axios.post('http://localhost:8000/api/login', loginCredentials).then((res) => {
+            const data = res.data
+            const cookie = useCookie('auth_token')
+            const user = useCookie('user_info')
+            user.value = data.user
+            cookie.value = data.token
+            navigateTo('/dashboard')
+            return res
+        }).catch((error) => {
+            ElNotification({
+                title: 'Error',
+                message: 'Login failed',
+                type: 'error',
+            })
 
-        const cookie = useCookie('auth_token')
-        cookie.value = data.token
-
-        return data
+        })
     }
 
     const logout = () => {
         const cookie = useCookie('auth_token')
         cookie.value = null
+        navigateTo('/')
     }
 
     const isLoggedIn = () => {

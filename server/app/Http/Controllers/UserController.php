@@ -46,9 +46,13 @@ class UserController extends Controller
             ]);
         }
 
+        // Generate token using Laravel Sanctum
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'message' => 'Login successful',
-            'user' => $user,
+            'user' => $user->only(['id', 'name', 'email', 'roles']),
+            'token' => $token,
         ], 200);
     }
 }

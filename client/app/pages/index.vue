@@ -32,6 +32,10 @@
 </template>
 <script setup lang="ts">
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const { login, isLoggedIn, loginCredentials } = useLogin()
 </script>
 
