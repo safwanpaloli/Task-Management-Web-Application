@@ -1,9 +1,10 @@
 import axios from 'axios'
 
 export default function useLogin() {
-    const loginCredentials = ref({ email: '', password: '' })
+    const loginCredentials = reactive({ email: '', password: '' })
     const login = async () => {
-        const response = await axios.post('/api/login', loginCredentials.value)
+        const response = await axios.post('http://localhost:8000/api/login', loginCredentials)
+        navigateTo('/dashboard')
         const data = response.data
 
         const cookie = useCookie('auth_token')
